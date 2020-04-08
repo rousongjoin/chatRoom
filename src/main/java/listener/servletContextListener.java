@@ -1,0 +1,29 @@
+package listener;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.ServletContextEvent;
+import javax.servlet.ServletContextListener;
+import javax.servlet.http.HttpSession;
+
+import entity.User;
+
+/**
+ * 监听ServletContext对象的创建和销毁
+ *
+ */
+public class servletContextListener implements ServletContextListener{
+	
+	public void contextDestroyed(ServletContextEvent sce) {
+		
+		
+	}
+	// ServletContext对象创建 下面这个方法就会执行
+	// ServletContextEvent事件对象. 监听器对象---》ServletContext对象.(事件源)
+	public void contextInitialized(ServletContextEvent sce) {
+		Map<User,HttpSession> usermap=new HashMap<User, HttpSession>();
+		sce.getServletContext().setAttribute("usermap", usermap);
+	}
+
+}
