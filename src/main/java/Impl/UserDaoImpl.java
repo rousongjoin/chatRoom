@@ -66,4 +66,36 @@ public class UserDaoImpl implements UserDao {
 		String sql = "select * from users where name=? and password=?";
 		return qr.query(sql, new BeanHandler<User>(User.class), username, password);
 	}
+
+	/**
+	 * 修改用户信息
+	 */
+	public void updateInformation(User user) throws Exception {
+		QueryRunner qr = new QueryRunner(DbUtiles.getBasicDataSource());
+		String sql = "update users set id=?,name=?,password=?,sex=?,type=?,e_mail=?,code=?,createtime=? where state=? ";
+		qr.update(sql, user.getId(), user.getName(), user.getPassword(), user.getSex(), user.getType(),
+				user.getE_mail(), null, user.getCreatetime(), user.getState());
+	}
+	
+	/**
+	 * 通过用户名获取信息
+	 */
+	public User getUser(String name) throws Exception{
+		String sql = "select * from users where name=?";
+		QueryRunner qr = new QueryRunner(DbUtiles.getBasicDataSource());
+		return qr.query(sql, new BeanHandler<User>(User.class), name);
+
+	}
+	
+	/**
+	 * 修改密码
+	 */
+	public void updatePassword(User user) throws Exception {
+		QueryRunner qr = new QueryRunner(DbUtiles.getBasicDataSource());
+		String sql = "update users set id=?,name=?,password=?,sex=?,type=?,e_mail=?,code=?,createtime=? where state=? ";
+		qr.update(sql, user.getId(), user.getName(), user.getPassword(), user.getSex(), user.getType(),
+				user.getE_mail(), null, user.getCreatetime(), user.getState());
+	}
+
+
 }

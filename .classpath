@@ -94,5 +94,7 @@
 	<classpathentry kind="lib" path="F:/eclipse/chatRoom/src/main/webapp/WEB-INF/lib/spring-webmvc-4.2.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="F:/eclipse/chatRoom/src/main/webapp/WEB-INF/lib/spring-websocket-4.2.4.RELEASE.jar"/>
 	<classpathentry kind="lib" path="F:/eclipse/chatRoom/src/main/webapp/WEB-INF/lib/standard.jar"/>
+	<classpathentry kind="lib" path="F:/eclipse/chatRoom/src/main/webapp/WEB-INF/lib/commons-beanutils-1.8.3.jar"/>
+	<classpathentry kind="lib" path="F:/eclipse/chatRoom/src/main/webapp/WEB-INF/lib/itcast-tools-1.4.2.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

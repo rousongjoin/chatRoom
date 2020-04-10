@@ -1,5 +1,6 @@
 package servlet;
 
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.text.DateFormat;
@@ -14,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.locale.converters.DateLocaleConverter;
+import org.springframework.http.HttpRequest;
+
 import Impl.UserServiceImpl;
 import entity.User;
 import service.UserService;
@@ -24,9 +27,37 @@ import util.MD5Utils;
  */
 public class UserServlet extends BaseServlet {
 	private static final long serialVersionUID = 1L;
+	//前往关于页面
+	public String aboutUI(HttpServletRequest req,HttpServletResponse res) {
+		return "/about.jsp";
+	}
+	
+	//点击前往系统设置页面
+	public String systemUI(HttpServletRequest req,HttpServletResponse res) {
+		return "/systemSetting.jsp";
+	}
+	
+	//点击聊天返回聊天页面
+	public String chatUI(HttpServletRequest req, HttpServletResponse res) {
+		return "/chat.jsp";
+	}
+	
 	//点击主页资料按钮,跳转到资料页面
-	public String informationUI(HttpServletRequest req, HttpServletResponse res) {
+	public String informationUI(HttpServletRequest req, HttpServletResponse res) throws Exception {
+		//刷新用户信息
+		req.setCharacterEncoding("utf-8");
+		res.setContentType("text/html;charset=utf-8");
+		try {
+		String name= req.getParameter("name");
+		UserService us = new UserServiceImpl();
+		User user = us.findUserByName(name);
+		req.setAttribute("user", user);
 		return "/information.jsp";
+		}catch(Exception e){
+			e.printStackTrace();
+			return "/information.jsp";
+		}
+
 	}
 	
 	//点击主页设置按钮，跳转到设置页面
@@ -105,7 +136,6 @@ public class UserServlet extends BaseServlet {
 		res.setContentType("text/html;charset=utf-8");
 		String message = (String) getServletContext().getAttribute("message");
 		if (message != null) {
-			System.out.println(message);
 			res.getWriter().println(message);
 		}
 		return null;
@@ -308,8 +338,6 @@ public class UserServlet extends BaseServlet {
 			HttpSession session = request.getSession();
 			String code2 = (String) session.getAttribute("code");
 			String code1 = request.getParameter("code1");
-			System.out.println(code1);
-			System.out.println(code2);
 			if (code1.length() == code2.length()) {
 				UserService us = new UserServiceImpl();
 				us.findUserByCode(user.getCode());
@@ -323,6 +351,73 @@ public class UserServlet extends BaseServlet {
 			e.printStackTrace();
 			request.setAttribute("msg", "激活失败");
 			return "/active.jsp";// 返回要BaseServlet做转发处理
+		}
+	}
+	
+	/**
+	 * 修改用户信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public String updateInformation(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=utf-8");
+		// 封装数据
+		try {
+			String name= request.getParameter("name");
+			String sex = request.getParameter("sex");
+			//调整业务逻辑
+			UserService us = new UserServiceImpl();
+			us.updateInformation(name, sex);
+			request.setAttribute("message", "信息修改成功");
+			return "/config.jsp";// 返回要BaseServlet做转发处理
+		} catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("message", "信息修改失败，请按照要求修改");
+			return "/msg.jsp";// 返回要BaseServlet做转发处理
+		}
+		
+	}
+	
+	/**
+	 * 修改用户密码
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public String changePassword(HttpServletRequest request,HttpServletResponse response) throws  Exception{
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=utf-8");
+		//封装数据
+		try {
+			String name = request.getParameter("name");
+			String password=request.getParameter("oldpass");
+			password = MD5Utils.md5(password);
+			UserService us = new UserServiceImpl();
+			User users = us.findUserByUsernameAndPwd(name,password);
+			if(users==null) {
+				request.setAttribute("error", "原始密码错误");
+				return "/config.jsp";
+			}
+			String newpassword = request.getParameter("newpass");
+			String newpasswordconfirm = request.getParameter("newpassconfirm");
+			if(newpassword.length()!=newpasswordconfirm.length()) {
+				request.setAttribute("error", "俩次密码不一致");
+				return "/config.jsp";// 返回要BaseServlet做转发处理
+			}
+			else {
+				password=MD5Utils.md5(newpassword);
+				us.updatePassword(name, password);
+				request.setAttribute("message", "信息修改成功");
+				return "/config.jsp";
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+			request.setAttribute("message", "信息修改失败，请按照要求修改");
+			return "/msg.jsp";// 返回要BaseServlet做转发处理
 		}
 	}
 

@@ -22,8 +22,8 @@
             <li class="am-dropdown" data-am-dropdown>
                 <a class="am-dropdown-toggle" data-am-dropdown-toggle href="#">${user.name} </a>
                 <ul class="am-dropdown-content">
-                    <li><a href="${pageContext.request.contextPath}/UserServlet?method=informationUI"><span class="am-icon-user"></span> 资料</a></li>
-                    <li><a href="${pageContext.request.contextPath}/UserServlet?method=configUI"><span class="am-icon-cog"></span> 设置</a></li>
+                    <li><a href="${pageContext.request.contextPath}/UserServlet?method=informationUI&name=${user.name}"><span class="am-icon-user"></span> 资料</a></li>
+                    <li><a href="${pageContext.request.contextPath}/UserServlet?method=configUI&name=${user.name}"><span class="am-icon-cog"></span> 设置</a></li>
                     <li><a href="${pageContext.request.contextPath}/UserServlet?method=logout"><span class="am-icon-power-off"></span> 注销</a></li>
                 </ul>
             </li>

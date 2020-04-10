@@ -108,7 +108,9 @@
 <title>聊天室</title>
 </head>
 <body>
-	<jsp:include page="head.jsp"></jsp:include>
+	<jsp:include page="head.jsp"/>
+	<div class="am-cf admin-main">
+	<jsp:include page="sideLeft.jsp"/>
 	<table width="778" height="276" border="0" align="center"
 		cellpadding="0" cellspacing="0">
 		<tr>
@@ -169,6 +171,7 @@
 			</tr>
 		</form>
 	</table>
+	</div>
 	<jsp:include page="footer.jsp"/>
 </body>
 </html>
