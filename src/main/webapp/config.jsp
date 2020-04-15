@@ -1,6 +1,7 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=utf-8"
+    pageEncoding="utf-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%request.setCharacterEncoding("utf-8");%> 
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <html>
 <head>
@@ -46,8 +47,18 @@
                                 <input type="text" id="userid" name="name" value="${user.name}" disabled>
                             </div>
                         </div>
-
+                        
                         <div class="am-form-group">
+                            <label for="nickname" class="am-u-sm-2 am-form-label">昵称</label>
+                            <div class="am-u-sm-10">
+                                <input type="text" id="nickname" name="nickname" value="${user.nickname}" required placeholder="这里输入你的昵称...">
+                            </div>
+                        </div>
+                        
+                        <div class="am-form-group">
+                        <script>
+                                $('#sex').find('option').eq('${user.sex}').attr('selected', true);
+                            </script> 
                             <label for="sex" class="am-u-sm-2 am-form-label">性别</label>
                             <div class="am-u-sm-10">
                                 <select id="sex" name="sex" data-am-selected>
@@ -57,11 +68,25 @@
                                     <option value="secrecy">保密</option>
                                     </select>
                              </div>
-                           <script>
-                                $('#sex').find('option').eq('${user.sex}').attr('selected', true);
-                            </script> 
+                           
                         </div>
                         
+                        <div class="am-form-group">
+                            <label for="age" class="am-u-sm-2 am-form-label">年龄</label>
+                            <div class="am-u-sm-10">
+                                <input type="number" id="age" name="age" min="1" max="100" value="${user.age}" placeholder="这里输入你的年龄...">
+                            </div>
+                        </div>
+                        
+                        <div class="am-form-group">
+                            <label for="profile" class="am-u-sm-2 am-form-label">个性签名</label>
+                            <div class="am-u-sm-10">
+                                <textarea class="" id="profile" name="profile" rows="5" placeholder="这里可以写下你的个性签名..."></textarea>
+                            </div>
+                            <script>
+                                $("#profile").val("${user.profile}");
+                            </script>
+                        </div>
 
                         
                         <div class="am-form-group">
@@ -73,7 +98,24 @@
                 </div>
 
                 <div class="am-tab-panel am-fade" id="tab2">
-
+                	 <form class="am-form am-form-horizontal" action="${ctx}/UserServlet?method=updatePicture&name=${user.name}" enctype="multipart/form-data" method="post" onsubmit="return checkFileType();" style="text-align: center;">
+                        <div style="text-align: center;margin-bottom: 10px">
+                            <img class="am-circle" src="${ctx}/${user.profilehead}" width="140" height="140" alt="Amayadream"/>
+                        </div>
+                        <div class="am-form-group am-form-file">
+                            <button type="button" class="am-btn am-btn-secondary am-btn-sm">
+                                <i class="am-icon-cloud-upload"></i> 选择要上传的文件</button>
+                            <input id="file" type="file" name="file" onchange="preview(this)" multiple>
+                        </div>
+                        <div id="file-list"></div>
+                        <button type="submit" class="am-btn am-round am-btn-success"><span class="am-icon-upload"></span> 上传头像</button>
+                        <script type="text/javascript">
+                            function preview(obj){
+                                var img = document.getElementById("previewimg");
+                                img.src = window.URL.createObjectURL(obj.files[0]);
+                            }
+                        </script>
+                    </form>
                 </div>
 
                 <div class="am-tab-panel am-fade" id="tab3">

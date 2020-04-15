@@ -51,6 +51,7 @@
         </div>
         <!-- content end -->
     </div>
+    </div>
     <a href="#" class="am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}">
         <span class="am-icon-btn am-icon-th-list"></span>
     </a>

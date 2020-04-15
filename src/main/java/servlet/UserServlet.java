@@ -3,9 +3,11 @@ package servlet;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import javax.servlet.ServletContext;
@@ -15,18 +17,47 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.locale.converters.DateLocaleConverter;
-import org.springframework.http.HttpRequest;
 
+import Impl.LogServiceImpl;
 import Impl.UserServiceImpl;
+import entity.Log;
 import entity.User;
+import service.LogService;
 import service.UserService;
+import util.DateUtils;
+import util.IpUtils;
 import util.MD5Utils;
+import util.UploadUtils;
 
 /**
  * Servlet implementation class UserServlet
  */
 public class UserServlet extends BaseServlet {
 	private static final long serialVersionUID = 1L;
+	
+	//前往聊天
+	public String chatRoomUI(HttpServletRequest req, HttpServletResponse res) {
+		return "/chatarea.jsp";
+	}
+	
+	//前往日志页面
+	public String logUI(HttpServletRequest req, HttpServletResponse res) throws UnsupportedEncodingException {
+		req.setCharacterEncoding("utf-8");
+		res.setContentType("text/html;charset=utf-8");
+		try {
+		String name= req.getParameter("name");
+		LogService ls = new LogServiceImpl();
+		List<Log> logs= ls.getLogs(name);
+		req.setAttribute("logs", logs);
+		int count = ls.getNum(name);
+		req.setAttribute("count", count);
+		return "/log.jsp";
+		}catch(Exception e){
+			e.printStackTrace();
+			return "/log.jsp";
+		}
+	}
+	
 	//前往关于页面
 	public String aboutUI(HttpServletRequest req,HttpServletResponse res) {
 		return "/about.jsp";
@@ -61,8 +92,19 @@ public class UserServlet extends BaseServlet {
 	}
 	
 	//点击主页设置按钮，跳转到设置页面
-	public String configUI(HttpServletRequest req, HttpServletResponse res) {
+	public String configUI(HttpServletRequest req, HttpServletResponse res) throws UnsupportedEncodingException {
+		req.setCharacterEncoding("utf-8");
+		res.setContentType("text/html;charset=utf-8");
+		try {
+		String name= req.getParameter("name");
+		UserService us = new UserServiceImpl();
+		User user = us.findUserByName(name);
+		req.setAttribute("user", user);
 		return "/config.jsp";
+		}catch(Exception e){
+			e.printStackTrace();
+			return "/config.jsp";
+		}
 	}
 
 	// 点击主页注册按钮，跳转到注册页面
@@ -169,7 +211,6 @@ public class UserServlet extends BaseServlet {
 		User user = new User();
 		try {
 			boolean isOk = true;
-			
 			// 用户名
 			String name = req.getParameter("name");
 			if (name == null || name.trim().equals("")) {
@@ -227,6 +268,18 @@ public class UserServlet extends BaseServlet {
 			user.setId(UUID.randomUUID().toString().replace("-", "").toUpperCase());
 			// 随机生成激活码
 			user.setCode(UUID.randomUUID().toString().replace("-", "").toUpperCase());
+			//生成昵称
+			user.setNickname(name);
+			//生成头像
+			user.setProfilehead(null);
+			//生成简介
+			user.setProfile(null);
+			//生成年龄
+			user.setAge(String.valueOf(DateUtils.getAgeFromBirthday(birthday)));
+			//生成创建时间
+			user.setFirsttime(DateUtils.getSystemTime());
+			//生成最后登录时间
+			user.setLasttime(null);
 			// 调整业务逻辑
 			if (isOk == true) {
 				UserService us = new UserServiceImpl();
@@ -278,14 +331,24 @@ public class UserServlet extends BaseServlet {
 		}
 		// 登录成功
 		else {
+			Log log =new Log();
+			log.setName(name);
+			log.setLogid(UUID.randomUUID().toString().replace("-", "").toUpperCase());
+			log.setLogtype("登录");
+			log.setDetail("用户登录");
+			log.setTime(DateUtils.getSystemTime());
+			log.setIp(IpUtils.getIpAddress(request));
+			LogService ls = new LogServiceImpl();
+			ls.add(log);
+			
 			// 接收数据
 			Map<String, String[]> map = request.getParameterMap();
 			try {
+				
 				// 封装数据
 				BeanUtils.populate(user, map);
 				// 第二个用户登录后把之前的session给消除
 				request.getSession().invalidate();
-
 				// 判断用户是否在map集合中，存在，销毁session，防止不同游览器登录同一账户不能踢出的问题
 				@SuppressWarnings("unchecked")
 				Map<User, HttpSession> usermap = (Map<User, HttpSession>) getServletContext().getAttribute("usermap");
@@ -296,24 +359,18 @@ public class UserServlet extends BaseServlet {
 					// 将这个session销毁.
 					session1.invalidate();
 				}
-
 				// 如果数据库里有这个用户,就把它放入session中
 				// 使用监听器：HttpSessionBandingListener作用在JavaBean上的监听器
 				request.getSession().setAttribute("user", user);
 				// 所有人的信息都能看见，所以信息存在servletContext域中
 				ServletContext application = getServletContext();
-
 				String sourceMessage = "";
-
 				if (null != application.getAttribute("message")) {
 					sourceMessage = application.getAttribute("message").toString();
-
 				}
-
-				sourceMessage += "系统公告：<font color='gray'>" + user.getName() + "走进了聊天室！</font><br>";
+				sourceMessage += "系统公告：<font color='gray'>" + user.getNickname() + "走进了聊天室！</font><br>";
 				application.setAttribute("message", sourceMessage);
 				response.sendRedirect(request.getContextPath() + "/chat.jsp");
-
 				return null;
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -340,9 +397,24 @@ public class UserServlet extends BaseServlet {
 			String code1 = request.getParameter("code1");
 			if (code1.length() == code2.length()) {
 				UserService us = new UserServiceImpl();
-				us.findUserByCode(user.getCode());
-				request.setAttribute("msg", "激活成功");
+				user = us.findUserByCode(code1);
+				if(user!=null) {
+				String name = user.getName();
+				Log log =new Log();
+				log.setName(name);
+				log.setLogid(UUID.randomUUID().toString().replace("-", "").toUpperCase());
+				log.setLogtype("添加");
+				log.setDetail("创建用户");
+				log.setTime(DateUtils.getSystemTime());
+				log.setIp(IpUtils.getIpAddress(request));
+				LogService ls = new LogServiceImpl();
+				ls.add(log);
 				return "/login.jsp";// 返回要BaseServlet做转发处理
+				}
+				else {
+				request.setAttribute("msg", "验证码错误,请重回邮件激活！");
+				return "/active.jsp";
+				}
 			} else {
 				request.setAttribute("msg", "验证码错误,请重回邮件激活！");
 				return "/active.jsp";
@@ -362,15 +434,28 @@ public class UserServlet extends BaseServlet {
 	 * @throws Exception
 	 */
 	public String updateInformation(HttpServletRequest request, HttpServletResponse response) throws Exception {
-		request.setCharacterEncoding("UTF-8");
-		response.setContentType("text/html;charset=utf-8");
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/html;charset:utf-8");
 		// 封装数据
 		try {
-			String name= request.getParameter("name");
+			String name = request.getParameter("name");
+			String nickname = request.getParameter("nickname");
 			String sex = request.getParameter("sex");
+			String age = request.getParameter("age");
+			String profile = request.getParameter("profile");
+			String newProfile=new String(profile.getBytes("ISO-8859-1"),"UTF-8");
 			//调整业务逻辑
 			UserService us = new UserServiceImpl();
-			us.updateInformation(name, sex);
+			us.updateInformation(name, nickname,sex,age,newProfile);
+			Log log =new Log();
+			log.setName(name);
+			log.setLogid(UUID.randomUUID().toString().replace("-", "").toUpperCase());
+			log.setLogtype("修改");
+			log.setDetail("修改用户信息");
+			log.setTime(DateUtils.getSystemTime());
+			log.setIp(IpUtils.getIpAddress(request));
+			LogService ls = new LogServiceImpl();
+			ls.add(log);
 			request.setAttribute("message", "信息修改成功");
 			return "/config.jsp";// 返回要BaseServlet做转发处理
 		} catch (Exception e) {
@@ -411,6 +496,15 @@ public class UserServlet extends BaseServlet {
 			else {
 				password=MD5Utils.md5(newpassword);
 				us.updatePassword(name, password);
+				Log log =new Log();
+				log.setName(name);
+				log.setLogid(UUID.randomUUID().toString().replace("-", "").toUpperCase());
+				log.setLogtype("修改");
+				log.setDetail("修改用户密码");
+				log.setTime(DateUtils.getSystemTime());
+				log.setIp(IpUtils.getIpAddress(request));
+				LogService ls = new LogServiceImpl();
+				ls.add(log);
 				request.setAttribute("message", "信息修改成功");
 				return "/config.jsp";
 			}
@@ -418,6 +512,56 @@ public class UserServlet extends BaseServlet {
 			e.printStackTrace();
 			request.setAttribute("message", "信息修改失败，请按照要求修改");
 			return "/msg.jsp";// 返回要BaseServlet做转发处理
+		}
+	}
+	
+	/**
+	 * 更新用户头像
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	public String updatePicture(HttpServletRequest request,HttpServletResponse response) throws Exception {
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html;charset=utf-8");
+		try {
+			String name = request.getParameter("name");
+			String file = getServletContext().getRealPath("/head_img/");
+			Map<String,String> map = new UploadUtils().File_upload(request,file);
+			User users = new User();
+			try {
+	            BeanUtils.populate(users,map);
+	        } catch (IllegalAccessException e) {
+	            e.printStackTrace();
+	        } catch (InvocationTargetException e) {
+	            e.printStackTrace();
+	        }
+	        System.out.println("servlet获取的img数据为:"+users.getProfilehead());
+	        String profilehead=users.getProfilehead();
+			UserService us = new UserServiceImpl();
+			User user = us.updatePicture(name, profilehead);
+            if(user!=null){
+            	Log log =new Log();
+				log.setName(name);
+				log.setLogid(UUID.randomUUID().toString().replace("-", "").toUpperCase());
+				log.setLogtype("修改");
+				log.setDetail("修改用户头像");
+				log.setTime(DateUtils.getSystemTime());
+				log.setIp(IpUtils.getIpAddress(request));
+				LogService ls = new LogServiceImpl();
+				ls.add(log);
+				request.setAttribute("message", "头像更新成功!");
+				return "/config.jsp";
+            }else{
+            	request.setAttribute("error", "头像更新失败!");
+            	return "/config.jsp";
+            }
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+			request.setAttribute("error", "出现问题了!");
+			return "/config.jsp";
 		}
 	}
 

@@ -6,19 +6,6 @@
 <meta charset="UTF-8">
 <title>验证激活</title>
 </head>
-<body>
-		
-<form action="${pageContext.request.contextPath }/UserServlet?method=active"
-		method="post">
-		<%session.setAttribute("code", request.getParameter("code")); %>
-<label for="code1">请输入激活码</label>
-			<div>
-				<input type="text" name="code1" placeholder="请输入激活码">
-			</div>
-			<input type="submit" value="激活">
-</form>
-</body>
-</html>
 <script>
 function GetQueryString(name) { 
     var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
@@ -36,3 +23,16 @@ var msg = '<%=request.getAttribute("msg")%>';
  
 
 </script>
+<body>
+		
+<form action="${pageContext.request.contextPath }/UserServlet?method=active"
+		method="post">
+		<%session.setAttribute("code", request.getParameter("code")); %>
+<label for="code1">请输入激活码</label>
+			<div>
+				<input type="text" name="code1" placeholder="请输入激活码">
+			</div>
+			<input type="submit" value="激活">
+</form>
+</body>
+</html>

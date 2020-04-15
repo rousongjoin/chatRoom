@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%request.setCharacterEncoding("UTF-8");%>  
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
 <!DOCTYPE html>
 <html>
@@ -30,14 +31,19 @@
                 <div class="am-tab-panel am-fade am-in am-active" id="tab1">
                     <div class="am-g">
                      <c:set value="${user}" var="user"/>
-                        <div class="am-u-md-3"><b>昵称:</b></div>
-                        <div class="am-u-md-3">
-                            ${user.name}
+                              
+                         <div class="am-u-md-6" style="float: right">
+                            <img class="am-circle" src="${user.profilehead}" width="140" height="140" "/>
                         </div>
-                        <%-- <div class="am-u-md-6" style="float: right">
-                            <img class="am-circle" src="${user.profilehead}" width="140" height="140" alt="${user.nickname}"/>
-                        </div> --%>
-
+                        
+                        <div class="am-u-md-3">
+                        <b>昵称:</b>
+                         </div>
+                        <div class="am-u-md-3">
+                            ${user.nickname}
+                        </div>
+                       
+              
                         <div class="am-u-md-3">
                         <b>性别:</b>
                         </div>
@@ -49,28 +55,30 @@
                                 <c:if test="${user.sex == 'secrecy'}">保密</c:if>
                             </c:if>
                         </div> 
-<!--                          <div class="am-u-md-3"> -->
-<!--                         <b>年龄:</b> -->
-<!--                         </div> -->
-<!--                         <div class="am-u-md-3"> -->
-<%--                             <c:if test="${user.age == null || user.age == ''}">未知</c:if> --%>
-<%--                             <c:if test="${user.age != null && user.age != ''}">${user.age}</c:if> --%>
-<!--                         </div>  -->
-<!--                         <div class="am-u-md-3"> -->
-<!--                         <b>简介:</b> -->
-<!--                         </div> -->
-<!--                         <div class="am-u-md-3"> -->
-<%--                             <c:if test="${user.profile == null || user.profile == ''}"> --%>
-<!--                                 这个人很懒,什么都没有留下! -->
-<%--                             </c:if> --%>
-<%--                             <c:if test="${user.profile != null && user.profile != ''}"> --%>
-<%--                                 ${user.profile} --%>
-<%--                             </c:if> --%>
-<!--                         </div>  -->
-<!--                         <div class="am-u-md-3"><b>注册时间</b></div> -->
-<%--                         <div class="am-u-md-3">${user.firsttime}</div> --%>
-<!--                         <div class="am-u-md-3"><b>最后登录</b></div> -->
-<%--                         <div class="am-u-md-3">${user.lasttime}</div> --%>
+                         <div class="am-u-md-3">
+                        <b>年龄:</b>
+                        </div>
+                        <div class="am-u-md-3">
+                            <c:if test="${user.age == null || user.age == ''}">未知</c:if>
+                            <c:if test="${user.age != null && user.age != ''}">${user.age}</c:if>
+                        </div> 
+                        <div class="am-u-md-3">
+                        <b>简介:</b>
+                        </div>
+                        <div class="am-u-md-3">
+                            <c:if test="${user.profile == null || user.profile == ''}">
+                                这个人很懒,什么都没有留下!
+                            </c:if>
+                            <c:if test="${user.profile != null && user.profile != ''}">
+                                ${user.profile}
+                            </c:if>
+                        </div> 
+                        <div class="am-u-md-3" style="float: left"><b>注册时间</b></div>
+                        <div class="am-u-md-3" style="float: left">${user.firsttime}</div>
+                        <div class="am-u-md-3" style="float: left"><b>最后登录</b></div>
+                        <div class="am-u-md-3" style="float: left">${user.lasttime}</div>
+                   
+                        
                     </div>
                 </div>
             </div>

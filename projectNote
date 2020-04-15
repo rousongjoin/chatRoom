@@ -10,7 +10,7 @@ day2019.11.02~day2019.12.05
 			类别：type（int）
 			邮箱：e-mail（String）
 			邮件验证码：code（String）
-			生日：createtime（String）
+			生日：createtime（String） 
 			状态：state（int）
 	2、注册页面实现效果
 		用户注册页面：
@@ -43,4 +43,34 @@ day2020.1.13~day2020.2.20
 	实现聊天功能
 	修改信息功能
 	权限实现功能
+	
+day2020.2.21~day2020.3.1
+一、第四阶段（样式设计）
+	实现所有页面的样式进行调试
+
+day2020.3.5~day2020.4.15
+一、第五阶段（新增加日志数据库和日志功能）
+	1.日志数据库创建
+		修改users数据库属性
+		新增
+		昵称：nickname （String）
+		头像：profilehead (String)
+		简介：profile （String）
+		年龄：age (String)
+		创建时间：firsttime （String）
+		最后登录时间：lasttime (String)
+		日志数据库logs
+		属性
+		日志编号: logid （String）
+		用户名：name (String)
+		操作时间:time (String)
+		操作类型：logtype (String)
+		详情：detail （String）
+		ip地址：ip （String）
+	2.日志数据库的查询和添加
+	
+day2020.4.17~day2020.5.20
+一、系统进行框架重构
+	运用mvc和mybatis进行重构
+	
 		

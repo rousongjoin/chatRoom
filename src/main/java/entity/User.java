@@ -13,7 +13,73 @@ import javax.servlet.http.HttpSessionBindingListener;
  * 状态：state（int）
  *
  */
+
+/**
+ * 新增属性昵称：nickname （String）
+ * 头像：profilehead (String)
+ * 简介：profile （String）
+ * 年龄：age (String)
+ * 创建时间：firsttime （String）
+ * 最后登录时间：lasttime (String)
+ *
+ */
 public class User implements HttpSessionBindingListener {
+	private String nickname;
+	private String profilehead;
+	private String profile;
+	private String age;
+	private String firsttime;
+	private String lasttime;
+	
+	public String getProfile() {
+		return profile;
+	}
+
+	public void setProfile(String profile) {
+		this.profile = profile;
+	}
+
+	
+	public String getNickname() {
+		return nickname;
+	}
+
+	public void setNickname(String nickname) {
+		this.nickname = nickname;
+	}
+
+	public String getProfilehead() {
+		return profilehead;
+	}
+
+	public void setProfilehead(String profilehead) {
+		this.profilehead = profilehead;
+	}
+
+	public String getAge() {
+		return age;
+	}
+
+	public void setAge(String age) {
+		this.age = age;
+	}
+
+	public String getFirsttime() {
+		return firsttime;
+	}
+
+	public void setFirsttime(String firsttime) {
+		this.firsttime = firsttime;
+	}
+
+	public String getLasttime() {
+		return lasttime;
+	}
+
+	public void setLasttime(String lasttime) {
+		this.lasttime = lasttime;
+	}
+
 	private String id;
 	private String name;
 	private String password;
@@ -124,10 +190,16 @@ public class User implements HttpSessionBindingListener {
 		this.state = state;
 	}
 
+
+
+
+
 	@Override
 	public String toString() {
-		return "User [id=" + id + ", name=" + name + ", password=" + password + ", sex=" + sex + ", type=" + type
-				+ ", e_mail=" + e_mail + ", code=" + code + ", createtime=" + createtime + ", state=" + state + "]";
+		return "User [nickname=" + nickname + ", profilehead=" + profilehead + ", profile=" + profile + ", age=" + age
+				+ ", firsttime=" + firsttime + ", lasttime=" + lasttime + ", id=" + id + ", name=" + name
+				+ ", password=" + password + ", sex=" + sex + ", type=" + type + ", e_mail=" + e_mail + ", code=" + code
+				+ ", createtime=" + createtime + ", state=" + state + "]";
 	}
 
 	/**

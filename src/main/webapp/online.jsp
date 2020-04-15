@@ -19,7 +19,7 @@
 		<c:forEach var="entry" items="${ usermap }">
 			<tr>
 				<td height="23" align="center">
-				<a href="#" onclick="set('${ entry.key.name }')">${ entry.key.name }</a>
+				<a href="#" onclick="set('${ entry.key.nickname }')">${ entry.key.nickname }</a>
 				<c:if test="${ user.type == 1 and entry.key.type == 0}">
 				<a href="${pageContext.request.contextPath }/UserServlet?method=kick&id=${ entry.key.id }">踢下线</a>
 				</c:if>

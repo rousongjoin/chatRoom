@@ -86,7 +86,7 @@
 
 	//用来规范选择对象
 	function set(selectPerson) { //自动添加聊天对象
-		if (selectPerson != "${user.name}") {
+		if (selectPerson != "${user.nickname}") {
 			form1.to.value = selectPerson;
 		} else {
 			alert("不要和自己聊天，换个人选吧！");
@@ -129,8 +129,8 @@
 			<tr>
 				<td height="30" align="left">&nbsp;</td>
 				<td height="37" align="left">
-				<input name="from" type="hidden" value="${user.name}">
-				[${user.name} ]对 
+				<input name="from" type="hidden" value="${user.nickname}">
+				[${user.nickname} ]对 
 				<input name="to" type="text" value="" size="35" readonly="readonly"> 
 				说：
 				</td>

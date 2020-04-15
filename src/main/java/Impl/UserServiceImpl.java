@@ -3,7 +3,7 @@ package Impl;
 import dao.UserDao;
 import entity.User;
 import service.UserService;
-import util.MD5Utils;
+import util.DateUtils;
 import util.MailUtils;
 
 public class UserServiceImpl implements UserService {
@@ -41,16 +41,23 @@ public class UserServiceImpl implements UserService {
 			//说明用户不存在数据库中，返回null，在UserServlet中做判断
 			return null;
 		}
+		user.setLasttime(DateUtils.getSystemTime());
+		ud.update(user);
+		user.toString();
 		return user;
 	}
 
-	public User updateInformation(String name,String sex) throws Exception {
+	public User updateInformation(String name,String nickname,String sex,String age,String profile) throws Exception {
 		UserDao ud=new UserDaoImpl();
 		User user=ud.getUser(name);
 		if(user==null) {
-			return null;}
+			return null;
+		}
+		user.setNickname(nickname);
 		user.setSex(sex);
-		ud.updateInformation(user);
+		user.setAge(age);
+		user.setProfile(profile);
+		ud.update(user);
 		return user;
 	}
 
@@ -63,7 +70,7 @@ public class UserServiceImpl implements UserService {
 			return null;
 			}
 		user.setPassword(password);
-		ud.updatePassword(user);
+		ud.update(user);
 		return user;
 	}
 
@@ -77,6 +84,15 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
-	
+	public User updatePicture(String name, String profilehead) throws Exception {
+		UserDao ud = new UserDaoImpl();
+		User user=ud.getUser(name);
+		if(user==null) {
+			return null;
+			}
+		user.setProfilehead(profilehead);
+		ud.update(user);
+		return user;
+	}
 
 }

@@ -16,7 +16,7 @@ public class UserDaoImpl implements UserDao {
 	public void add(User user) {
 		try {
 			conn = DbUtiles.getConnection();
-			String sql = "insert into users values(?,?,?,?,?,?,?,?,?)";
+			String sql = "insert into users values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, user.getId());
 			ps.setString(2, user.getName());
@@ -27,6 +27,12 @@ public class UserDaoImpl implements UserDao {
 			ps.setString(7, user.getCode());
 			ps.setString(8, user.getCreatetime());
 			ps.setInt(9, user.getState());
+			ps.setString(10, user.getNickname());
+			ps.setString(11, user.getProfilehead());
+			ps.setString(12, user.getProfile());
+			ps.setString(13, user.getAge());
+			ps.setString(14, user.getFirsttime());
+			ps.setString(15, user.getLasttime());
 			ps.executeUpdate();
 			ps.close();
 		} catch (SQLException e) {
@@ -53,9 +59,10 @@ public class UserDaoImpl implements UserDao {
 	 */
 	public void update(User user) throws SQLException {
 		QueryRunner qr = new QueryRunner(DbUtiles.getBasicDataSource());
-		String sql = "update users set id=?,name=?,password=?,sex=?,type=?,e_mail=?,code=?,createtime=? where state=? ";
-		qr.update(sql, user.getId(), user.getName(), user.getPassword(), user.getSex(), user.getType(),
-				user.getE_mail(), null, user.getCode(), user.getCreatetime(), user.getState());
+		String sql = "update users set id=?,password=?,sex=?,type=?,e_mail=?,code=?,createtime=? ,state=?,nickname=?,profilehead=?,profile=?,age=?,firsttime=?,lasttime=? where name=? ";
+		qr.update(sql, user.getId() , user.getPassword(), user.getSex(), user.getType(),
+				user.getE_mail(), null, user.getCreatetime(), user.getState(),user.getNickname()
+				,user.getProfilehead(),user.getProfile(),user.getAge(),user.getFirsttime(),user.getLasttime(),user.getName());
 	}
 
 	/**
@@ -67,15 +74,6 @@ public class UserDaoImpl implements UserDao {
 		return qr.query(sql, new BeanHandler<User>(User.class), username, password);
 	}
 
-	/**
-	 * 修改用户信息
-	 */
-	public void updateInformation(User user) throws Exception {
-		QueryRunner qr = new QueryRunner(DbUtiles.getBasicDataSource());
-		String sql = "update users set id=?,name=?,password=?,sex=?,type=?,e_mail=?,code=?,createtime=? where state=? ";
-		qr.update(sql, user.getId(), user.getName(), user.getPassword(), user.getSex(), user.getType(),
-				user.getE_mail(), null, user.getCreatetime(), user.getState());
-	}
 	
 	/**
 	 * 通过用户名获取信息
@@ -87,15 +85,5 @@ public class UserDaoImpl implements UserDao {
 
 	}
 	
-	/**
-	 * 修改密码
-	 */
-	public void updatePassword(User user) throws Exception {
-		QueryRunner qr = new QueryRunner(DbUtiles.getBasicDataSource());
-		String sql = "update users set id=?,name=?,password=?,sex=?,type=?,e_mail=?,code=?,createtime=? where state=? ";
-		qr.update(sql, user.getId(), user.getName(), user.getPassword(), user.getSex(), user.getType(),
-				user.getE_mail(), null, user.getCreatetime(), user.getState());
-	}
-
 
 }
