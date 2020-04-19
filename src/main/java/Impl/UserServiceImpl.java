@@ -95,4 +95,14 @@ public class UserServiceImpl implements UserService {
 		return user;
 	}
 
+	public User findUserByNickname(String nickname) throws Exception {
+		UserDao ud=new UserDaoImpl();
+		User user=ud.findUserByNiackname(nickname);
+		if(user==null) {
+			//说明用户不存在数据库中，返回null，在UserServlet中做判断
+			return null;
+		}
+		return user;
+	}
+
 }

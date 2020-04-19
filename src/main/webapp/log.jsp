@@ -10,25 +10,7 @@
 </head>
 <link rel="stylesheet" type="text/css" href="static/plugins/laypage/skin/laypage.css"/>
 <script src="static/plugins/laypage/laypage.js"></script>
-<script  type="text/javascript">
-    $(function(){
-        laypage({
-            cont: 'page',
-            pages: ${count},
-            curr: function(){
-                var page = location.search.match(/page=(\d+)/);
-                return page ? page[1] : 1;
-            }(),
-            skin: '#AF0000',
-            groups: 5, //连续显示分页数
-            jump: function(e, first){ //触发分页后的回调
-                if(!first){ //一定要加此判断，否则初始时会无限刷新
-                    location.href = '?method=logUI&name=${user.name}?page='+e.curr;
-                }
-            }
-        });
-    });
-</script>
+
 <body>
 <jsp:include page="head.jsp"/>
 <div class="am-cf admin-main">
@@ -52,15 +34,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                	<c:set var="startIndex" value="${fn:length(logs)-1}"></c:set>  
                     <c:forEach items="${logs}" var="log" varStatus="status">
                         <tr>
                             <td>${status.index + 1}</td>
-                            <td>${logs[startIndex - status.index].name}</td>
-                            <td>${logs[startIndex - status.index].time}</td>
-                            <td>${logs[startIndex - status.index].logtype}</td>
-                            <td>${logs[startIndex - status.index].detail}</td>
-                            <td>${logs[startIndex - status.index].ip}</td>
+                            <td>${log.name}</td>
+                            <td>${log.time}</td>
+                            <td>${log.logtype}</td>
+                            <td>${log.detail}</td>
+                            <td>${log.ip}</td>
                         </tr>
                     </c:forEach>
                 </tbody>
@@ -74,7 +55,24 @@
     <span class="am-icon-btn am-icon-th-list"></span>
 </a>
 <jsp:include page="footer.jsp"/>
-
-
+<script>
+    $(function(){
+        laypage({
+            cont: 'page',
+            pages: ${count},
+            curr: function(){
+                var page = location.search.match(/page=(\d+)/);
+                return page ? page[1] : 1;
+            }(),
+            skin: '#AF0000',
+            groups: 5, //连续显示分页数
+            jump: function(e, first){ //触发分页后的回调
+                if(!first){ //一定要加此判断，否则初始时会无限刷新
+                    location.href = '?method=logUI&name=${user.name}&page='+e.curr;
+                }
+            }
+        });
+    });
+</script>
 </body>
 </html>

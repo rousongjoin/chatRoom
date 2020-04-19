@@ -71,7 +71,6 @@ public class UploadUtils {
                 ServletFileUpload sfu = new ServletFileUpload(factory);
                 sfu.setSizeMax(10 * 1024 * 1024);//以byte为单位 1024byte->1KB*1024=1M->1M*10=10M
                 sfu.setHeaderEncoding("utf-8");
-
                 //3.调用ServletFileUpload.parseRequest方法来解析对象，得到一个保存了所有上传内容的List对象
                 List<FileItem> fileItemList = sfu.parseRequest(request);
                 Iterator<FileItem> fileItems = fileItemList.iterator();
@@ -94,33 +93,30 @@ public class UploadUtils {
                                 map.put("profilehead","empty");
                             }else {
                                 String fileName = fileItem.getName();// 文件名称
-                                System.out.println("原文件名：" + fileName);// Koala.jpg
+                                System.out.println("原文件名：" + fileName);
 
                                 String suffix = fileName.substring(fileName.lastIndexOf('.'));
                                 System.out.println("扩展名：" + suffix);// .jpg
 
                                 // 新文件名（唯一）
                                 String newFileName = new Date().getTime() + suffix;
-                                System.out.println("新文件名：" + newFileName);// image\1478509873038.jpg
+                                System.out.println("新文件名：" + newFileName);
 
                                 //将文件名存入到数组中
                                 map.put("profilehead", newFileName);
 
                                 // 5. 调用FileItem的write()方法，写入文件
-                                String context = filepath+newFileName ;
-                                System.out.println("图片的路径为"+context);
-                                File file = new File(context);
-                                System.out.println(file.getAbsolutePath());
-                                fileItem.write(file);
-
+                                String uploadPath=request.getSession().getServletContext().getRealPath("/head_img/");
+                                System.out.println(uploadPath);
+                                File file=new File(uploadPath);
+                                file.mkdirs();
+                                fileItem.write(new File(uploadPath,newFileName));
                                 //判断该文件是否为head_img下默认的头像，如果不是才执行删除
                                 if(!fileName.contains("empty")|| !newFileName.contains("empty")){
-                                    // 6. 调用FileItem的delete()方法，删除临时文件
-                                    fileItem.delete();
-                                }
-
+                                	// 6.调用FileItem的delete()方法，删除临时文件 
+                                	fileItem.delete();
+                                	}
                             }
-
                         }
                     }catch (StringIndexOutOfBoundsException e ){
                         //若为空指指针

@@ -8,7 +8,7 @@ public interface LogService {
 	//添加日志
 	public void add(Log log) throws Exception;
 	//显示日志
-	public List<Log> getLogs(String name) throws Exception;
+	public List<Log> getLogs(String name,int page, int pageSize) throws Exception;
 	//返回日志个数
-	public int getNum(String name) throws Exception;
+	public int getNum(String name,int pageSize) throws Exception;
 }

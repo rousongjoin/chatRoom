@@ -86,4 +86,13 @@
     <servlet-name>LogServlet</servlet-name>
     <url-pattern>/LogServlet</url-pattern>
   </servlet-mapping>
+  <servlet>
+  	<display-name>chatServer</display-name>
+  	<servlet-name>chatServer</servlet-name>
+    <servlet-class>webSocket.chatServer</servlet-class>
+  </servlet>
+   <servlet-mapping>
+    <servlet-name>chatServer</servlet-name>
+    <url-pattern>/chatServer</url-pattern>
+  </servlet-mapping>
 </web-app>

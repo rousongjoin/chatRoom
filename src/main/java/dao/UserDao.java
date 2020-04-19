@@ -21,5 +21,8 @@ public interface UserDao {
 	//获得用户
 	public User getUser(String name)throws Exception;
 	
+	//获得用户名
+	public User findUserByNiackname(String nickname) throws Exception;
+	
 
 }

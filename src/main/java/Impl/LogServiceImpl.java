@@ -13,16 +13,20 @@ public class LogServiceImpl implements LogService{
 		ld.add(log);
 	}
 
-	public List<Log> getLogs(String name) throws Exception {
+	public List<Log> getLogs(String name, int page, int pageSize) throws Exception {
+		int start=1;
+		int end =pageSize;
+		if(page != 1) {
+            start = pageSize * (page - 1) + 1;
+        }
 		LogDao ld = new LogDaoImpl();
-		List<Log> logs=ld.selectByName(name);
-		return logs;
+		return ld.selectByName(name,start,end);
 	}
 
-	public int getNum(String name) throws Exception {
+	public int getNum(String name,int pageSize) throws Exception {
 		LogDao ld = new LogDaoImpl();
-		int count =ld.getNum(name);
-		return count;
+		int pageCount = ld.getNum(name);
+		return pageCount % pageSize == 0 ? pageCount/pageSize : pageCount/pageSize + 1;
 	}
 
 }

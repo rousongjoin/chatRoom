@@ -6,12 +6,14 @@
     <title>ChatRoom | 聊天</title>
     <jsp:include page="commonfile.jsp"/>
     <script src="${ctx}/static/plugins/sockjs/sockjs.js"></script>
+    <script src="${ctx}/static/plugins/contestjs/js/context.js"></script>
+    <%session.setAttribute("name", request.getParameter("name")); %>
 </head>
 <body>
 <jsp:include page="head.jsp"/>
 <div class="am-cf admin-main">
     <jsp:include page="sideLeft.jsp"/>
-
+	
     <!-- content start -->
     <div class="admin-content">
         <div class="" style="width: 80%;float:left;">
@@ -42,15 +44,13 @@
             <div class="am-panel-hd">
                 <h3 class="am-panel-title">在线列表 [<span id="onlinenum"></span>]</h3>
             </div>
-            <ul class="am-list am-list-static am-list-striped" >
-                <li>图灵机器人 <button class="am-btn am-btn-xs am-btn-danger" id="tuling" data-am-button>未上线</button></li>
-            </ul>
             <ul class="am-list am-list-static am-list-striped" id="list">
             </ul>
         </div>
     </div>
     <!-- content end -->
 </div>
+
 <a href="#" class="am-show-sm-only admin-menu" data-am-offcanvas="{target: '#admin-offcanvas'}">
     <span class="am-icon-btn am-icon-th-list"></span>
 </a>
@@ -58,6 +58,8 @@
 
 <script>
     $(function () {
+    	
+    	
         context.init({preventDoubleContext: false});
         context.settings({compress: true});
         context.attach('#chat-view', [
@@ -81,7 +83,7 @@
         ]);
     });
     if("${message}"){
-        layer.msg('${message}', {
+        layer.msg("${message}", {
             offset: 0
         });
     }
@@ -91,22 +93,11 @@
             shift: 6
         });
     }
-    $("#tuling").click(function(){
-        var onlinenum = $("#onlinenum").text();
-        if($(this).text() == "未上线"){
-            $(this).text("已上线").removeClass("am-btn-danger").addClass("am-btn-success");
-            showNotice("图灵机器人加入聊天室");
-            $("#onlinenum").text(parseInt(onlinenum) + 1);
-        }
-        else{
-            $(this).text("未上线").removeClass("am-btn-success").addClass("am-btn-danger");
-            showNotice("图灵机器人离开聊天室");
-            $("#onlinenum").text(parseInt(onlinenum) - 1)
-        }
-    });
+    
     var wsServer = null;
     var ws = null;
     wsServer = "ws://" + location.host+"${pageContext.request.contextPath}" + "/chatServer";
+    
     ws = new WebSocket(wsServer); //创建WebSocket对象
     ws.onopen = function (evt) {
         layer.msg("已经建立连接", { offset: 0});
@@ -183,7 +174,6 @@
             layer.msg("请不要惜字如金!", { offset: 0, shift: 6 });
             return;
         }
-        $("#tuling").text() == "已上线"? tuling(message):console.log("图灵机器人未开启");  //检测是否加入图灵机器人
         ws.send(JSON.stringify({
             message : {
                 content : message,
@@ -234,7 +224,7 @@
     function showChat(message){
         var to = message.to == null || message.to == ""? "全体成员" : message.to;   //获取接收人
         var isSef = '${user.nickname}' == message.from ? "am-comment-flip" : "";   //如果是自己则显示在右边,他人信息显示在左边
-        var html = "<li class=\"am-comment "+isSef+" am-comment-primary\"><a href=\"#link-to-user-home\"><img width=\"48\" height=\"48\" class=\"am-comment-avatar\" alt=\"\" src=\"${ctx}/"+message.from+"/head\"></a><div class=\"am-comment-main\">\n" +
+        var html = "<li class=\"am-comment "+isSef+" am-comment-primary\"><a href=\"#link-to-user-home\"><img width=\"48\" height=\"48\" class=\"am-comment-avatar\" alt=\"\" src=\"${ctx}/chatServer?method=head&nickname="+message.from+"\"></a><div class=\"am-comment-main\">\n" +
                 "<header class=\"am-comment-hd\"><div class=\"am-comment-meta\">   <a class=\"am-comment-author\" href=\"#link-to-user\">"+message.from+"</a> 发表于<time> "+message.time+"</time> 发送给: "+to+" </div></header><div class=\"am-comment-bd\"> <p>"+message.content+"</p></div></div></li>";
         $("#chat").append(html);
         $("#message").val("");  //清空输入区
@@ -257,27 +247,6 @@
         $("#onlinenum").text($("#list li").length);     //获取在线人数
     }
 
-    /**
-     * 图灵机器人
-     * @param message
-     */
-    function tuling(message){
-        var html;
-        $.getJSON("http://www.tuling123.com/openapi/api?key=6ad8b4d96861f17d68270216c880d5e3&info=" + message,function(data){
-            if(data.code == 100000){
-                html = "<li class=\"am-comment am-comment-primary\"><a href=\"#link-to-user-home\"><img width=\"48\" height=\"48\" class=\"am-comment-avatar\" alt=\"\" src=\"${ctx}/static/img/robot.jpg\"></a><div class=\"am-comment-main\">\n" +
-                        "<header class=\"am-comment-hd\"><div class=\"am-comment-meta\">   <a class=\"am-comment-author\" href=\"#link-to-user\">Robot</a> 发表于<time> "+getDateFull()+"</time> 发送给: ${userid}</div></header><div class=\"am-comment-bd\"> <p>"+data.text+"</p></div></div></li>";
-            }
-            if(data.code == 200000){
-                html = "<li class=\"am-comment am-comment-primary\"><a href=\"#link-to-user-home\"><img width=\"48\" height=\"48\" class=\"am-comment-avatar\" alt=\"\" src=\"${ctx}/static/img/robot.jpg\"></a><div class=\"am-comment-main\">\n" +
-                        "<header class=\"am-comment-hd\"><div class=\"am-comment-meta\">   <a class=\"am-comment-author\" href=\"#link-to-user\">Robot</a> 发表于<time> "+getDateFull()+"</time> 发送给: ${userid}</div></header><div class=\"am-comment-bd\"> <p>"+data.text+"</p><a href=\""+data.url+"\" target=\"_blank\">"+data.url+"</a></div></div></li>";
-            }
-            $("#chat").append(html);
-            var chat = $("#chat-view");
-            chat.scrollTop(chat[0].scrollHeight);
-            $("#message").val("");  //清空输入区
-        });
-    }
 
     /**
      * 添加接收人

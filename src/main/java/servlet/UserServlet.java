@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.locale.converters.DateLocaleConverter;
-
 import Impl.LogServiceImpl;
 import Impl.UserServiceImpl;
 import entity.Log;
@@ -35,23 +34,22 @@ import util.UploadUtils;
 public class UserServlet extends BaseServlet {
 	private static final long serialVersionUID = 1L;
 	
-	//前往聊天
-	public String chatRoomUI(HttpServletRequest req, HttpServletResponse res) {
-		return "/chatarea.jsp";
-	}
+	
 	
 	//前往日志页面
 	public String logUI(HttpServletRequest req, HttpServletResponse res) throws UnsupportedEncodingException {
 		req.setCharacterEncoding("utf-8");
 		res.setContentType("text/html;charset=utf-8");
 		try {
-		String name= req.getParameter("name");
-		LogService ls = new LogServiceImpl();
-		List<Log> logs= ls.getLogs(name);
-		req.setAttribute("logs", logs);
-		int count = ls.getNum(name);
-		req.setAttribute("count", count);
-		return "/log.jsp";
+			int pageSize=5;
+			int page = Integer.parseInt(req.getParameter("page"));
+			String name= req.getParameter("name");
+			LogService ls = new LogServiceImpl();
+			List<Log> logs= ls.getLogs(name,page,pageSize);
+			req.setAttribute("logs", logs);
+			int count = ls.getNum(name,pageSize);
+			req.setAttribute("count", count);
+			return "/log.jsp";
 		}catch(Exception e){
 			e.printStackTrace();
 			return "/log.jsp";
@@ -128,7 +126,8 @@ public class UserServlet extends BaseServlet {
 	// 退出操作
 	public String logout(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
+		HttpSession session = request.getSession();
+		session.removeAttribute("name");
 		request.getSession().invalidate();
 		// 注销用户的时候只要调用invalidate方法注销session就可以了,不需要走Service和Dao
 		return "/index.jsp";
@@ -340,7 +339,6 @@ public class UserServlet extends BaseServlet {
 			log.setIp(IpUtils.getIpAddress(request));
 			LogService ls = new LogServiceImpl();
 			ls.add(log);
-			
 			// 接收数据
 			Map<String, String[]> map = request.getParameterMap();
 			try {
@@ -541,6 +539,7 @@ public class UserServlet extends BaseServlet {
 	        String profilehead=users.getProfilehead();
 			UserService us = new UserServiceImpl();
 			User user = us.updatePicture(name, profilehead);
+			String path = profilehead;
             if(user!=null){
             	Log log =new Log();
 				log.setName(name);
@@ -551,6 +550,8 @@ public class UserServlet extends BaseServlet {
 				log.setIp(IpUtils.getIpAddress(request));
 				LogService ls = new LogServiceImpl();
 				ls.add(log);
+				System.out.println(path);
+				request.setAttribute("path",path);
 				request.setAttribute("message", "头像更新成功!");
 				return "/config.jsp";
             }else{

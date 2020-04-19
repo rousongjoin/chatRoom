@@ -13,7 +13,7 @@
     <div class="am-offcanvas-bar admin-offcanvas-bar">
         <ul class="am-list admin-sidebar-list">
             <li><a href="${ctx}/UserServlet?method=chatUI"><span class="am-icon-commenting"></span> 聊天室</a></li>
-            <li><a href="${ctx}/UserServlet?method=chatRoomUI"><span class="am-icon-commenting"></span> 聊天</a></li>
+            <li><a href="${ctx}/chatServer?method=chatRoomUI&name=${user.name}"><span class="am-icon-commenting"></span> 聊天</a></li>
             <li><a href="${ctx}/UserServlet?method=informationUI&name=${user.name}" class="am-cf"><span class="am-icon-book"></span> 个人信息<span class="am-icon-star am-fr am-margin-right admin-icon-yellow"></span></a></li>
             <li class="admin-parent">
                 <a class="am-cf" data-am-collapse="{target: '#collapse-nav'}"><span class="am-icon-cogs"></span> 设置 <span class="am-icon-angle-right am-fr am-margin-right"></span></a>
@@ -22,14 +22,14 @@
                     <li><a href="${ctx}/UserServlet?method=systemUI"><span class="am-icon-cog"></span> 系统设置</a></li>
                 </ul>
             </li>
-            <li><a href="${ctx}/UserServlet?method=logUI&name=${user.name}"><span class="am-icon-inbox"></span> 系统日志<span class="am-badge am-badge-secondary am-margin-right am-fr">24</span></a></li>
+            <li><a href="${ctx}/UserServlet?method=logUI&name=${user.name}&page=1"><span class="am-icon-inbox"></span> 系统日志<span class="am-badge am-badge-secondary am-margin-right am-fr">24</span></a></li>
             <li><a href="${ctx}/UserServlet?method=aboutUI"><span class="am-icon-leaf"></span> 关于</a></li>
             <li><a href="${ctx}/UserServlet?method=logout"><span class="am-icon-sign-out"></span> 注销</a></li>
         </ul>
         <div class="am-panel am-panel-default admin-sidebar-panel">
             <div class="am-panel-bd">
                 <p><span class="am-icon-tag"></span> Welcome</p>
-                <p>欢迎使用WebChat聊天室~</p>
+                <p>欢迎使用ChatRoom聊天室~</p>
             </div>
         </div>
     </div>

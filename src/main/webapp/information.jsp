@@ -33,7 +33,7 @@
                      <c:set value="${user}" var="user"/>
                               
                          <div class="am-u-md-6" style="float: right">
-                            <img class="am-circle" src="${user.profilehead}" width="140" height="140" "/>
+                            <img class="am-circle" src="${ctx}/head_img/${user.profilehead}" width="140" height="140" "/>
                         </div>
                         
                         <div class="am-u-md-3">

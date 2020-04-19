@@ -4,8 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.dbutils.QueryRunner;
+import org.apache.commons.dbutils.handlers.BeanListHandler;
 import dao.LogDao;
 import entity.Log;
 import util.DbUtiles;
@@ -33,35 +34,11 @@ public class LogDaoImpl implements LogDao{
 		}
 	}
 
-	public List<Log> selectByName(String name) throws SQLException {
-		List<Log> logs = new ArrayList<Log>();
-		try {
-		conn = DbUtiles.getConnection();
-		String sql = "select * from logs where name=?";
-		PreparedStatement ps = conn.prepareStatement(sql);
-		ps.setString(1, name);
-		ResultSet rs = ps.executeQuery();
-		while (rs.next()) {
-			String logname = rs.getString("name");
-			String time = rs.getString("time");
-			String logtype = rs.getString("logtype");
-			String detail = rs.getString("detail");
-			String ip = rs.getString("ip");
-			Log log = new Log();
-			log.setName(logname);
-			log.setTime(time);
-			log.setLogtype(logtype);
-			log.setDetail(detail);
-			log.setIp(ip);
-			logs.add(log);
-		}
-		rs.close();
-		ps.close();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DbUtiles.closeConnection(conn);
-		}
+	public List<Log> selectByName(String name ,int offset,int limit) throws SQLException {
+		String sql = "select name, time, logtype, detail, ip from logs where "
+				+ "name=? limit ?,?";
+		QueryRunner qr = new QueryRunner(DbUtiles.getBasicDataSource());
+		List<Log> logs = qr.query(sql, new BeanListHandler<Log>(Log.class), name, offset, limit);
 		return logs;
 	}
 

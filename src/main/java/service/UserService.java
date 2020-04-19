@@ -17,6 +17,8 @@ public interface UserService {
 	public User updatePassword(String name,String password) throws Exception;
 	//修改用户头像
 	public User updatePicture(String name,String profilehead)throws Exception;
+	//通过用户名查找
+	public User findUserByNickname(String nickname) throws Exception;
 	
 
 }

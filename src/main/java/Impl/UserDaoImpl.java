@@ -84,6 +84,12 @@ public class UserDaoImpl implements UserDao {
 		return qr.query(sql, new BeanHandler<User>(User.class), name);
 
 	}
+
+	public User findUserByNiackname(String nickname) throws Exception {
+		String sql = "select * from users where nickname=?";
+		QueryRunner qr = new QueryRunner(DbUtiles.getBasicDataSource());
+		return qr.query(sql, new BeanHandler<User>(User.class), nickname);
+	}
 	
 
 }

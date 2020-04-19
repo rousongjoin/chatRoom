@@ -9,7 +9,7 @@ public interface LogDao {
 	//添加日志
 	public void add(Log log);
 	//查看日志
-	public List<Log> selectByName(String name) throws SQLException;
+	public List<Log> selectByName(String name,int offset,int limit) throws SQLException;
 	//返回日志个数
 	public int getNum(String name);
 }
